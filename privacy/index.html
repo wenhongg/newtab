@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="RrC-9N23ZXBY5imwde2VVzgFlDhZca3ALpualsePXaE" />
+<title>Day Tab — Privacy Policy</title>
+<style>
+  body { margin: 0; background: #f7f4ec; color: #2b2a26;
+         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+         line-height: 1.65; }
+  main { max-width: 720px; margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
+  h1, h2 { font-family: "Iowan Old Style", Georgia, "Times New Roman", serif;
+           font-weight: 400; line-height: 1.25; }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.3rem; margin-top: 2.2rem; }
+  a { color: #8f5f08; }
+  .updated { color: #7a7567; font-style: italic; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Day Tab — Privacy Policy</h1>
+  <p class="updated">Last updated: July 22, 2026</p>
+
+  <p>Day Tab is a Chrome new-tab extension that shows your Google Calendar
+  day, a to-do list, a scratchpad, and a weather summary. It is built so that
+  your data stays between your browser and the services you explicitly
+  connect — <strong>Day Tab has no servers, no analytics, and no tracking of
+  any kind.</strong></p>
+
+  <h2>What the extension accesses and where it goes</h2>
+
+  <p><strong>Google Calendar (optional, read-only).</strong> If you connect
+  Google Calendar, the extension requests the
+  <code>calendar.events.readonly</code> scope and fetches events directly
+  from Google's Calendar API to display them on your new-tab page. Event
+  data is held in memory only, is never written to disk or extension
+  storage, and is never sent anywhere other than back to your screen.
+  Sign-in is handled by Chrome's built-in identity system; the extension
+  never sees your password and does not store OAuth tokens itself.</p>
+
+  <p><strong>To-dos and scratchpad.</strong> Stored in Chrome's
+  <code>storage.sync</code>, which syncs them across your own Chrome profile
+  via your Google account. They are never transmitted to the developer or
+  any third party.</p>
+
+  <p><strong>Weather (optional).</strong> If you set a weather city, the
+  city name you type is sent once to Open-Meteo's geocoding service, and the
+  resulting coordinates are sent to Open-Meteo's forecast API
+  (open-meteo.com, a keyless, account-free weather service) to fetch
+  forecasts. No other data — nothing from your calendar, to-dos, or notes —
+  is ever included in these requests. The chosen city is stored in Chrome's
+  <code>storage.sync</code>.</p>
+
+  <h2>What the extension does NOT do</h2>
+  <ul>
+    <li>No data is sent to the developer — there is no backend.</li>
+    <li>No analytics, telemetry, crash reporting, or advertising
+        identifiers.</li>
+    <li>No sale or sharing of user data with anyone.</li>
+    <li>No reading of browsing history, tabs, or any site content.</li>
+  </ul>
+
+  <h2>Data retention and deletion</h2>
+  <p>All stored data (to-dos, scratchpad, weather city) lives in your Chrome
+  profile's sync storage. Removing the extension deletes it. Calendar access
+  can be revoked at any time at
+  <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about this policy: open an issue on the
+  <a href="https://github.com/wenhongg/newtab">project's GitHub repository</a>.</p>
+</main>
+</body>
+</html>

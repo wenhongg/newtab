@@ -1,8 +1,3 @@
----
-title: Day Tab — Privacy Policy
-permalink: /privacy/
----
-
 # Day Tab — Privacy Policy
 
 _Last updated: July 22, 2026_
