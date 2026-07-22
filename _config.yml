@@ -1,0 +1,19 @@
+# GitHub Pages config — renders the markdown docs (PRIVACY.md) as styled pages.
+theme: jekyll-theme-primer
+title: Day Tab
+description: A calm Chrome new-tab page — calendar, to-dos, scratchpad, weather.
+
+# Only the docs need to be built as pages; keep the extension source out.
+exclude:
+  - "*.js"
+  - "*.css"
+  - "*.html"
+  - "*.zip"
+  - "*.sh"
+  - manifest.json
+  - calendar/
+  - todo/
+  - scratchpad/
+  - weather/
+  - shared/
+  - icons/

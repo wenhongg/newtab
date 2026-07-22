@@ -1,3 +1,8 @@
+---
+title: Day Tab — Privacy Policy
+permalink: /privacy/
+---
+
 # Day Tab — Privacy Policy
 
 _Last updated: July 22, 2026_
@@ -45,4 +50,4 @@ can be revoked at any time at
 ## Contact
 
 Questions about this policy: open an issue on the project's GitHub
-repository, or email lamwh55@gmail.com.
+repository.
