@@ -3,6 +3,14 @@ theme: jekyll-theme-primer
 title: Day Tab
 description: A calm Chrome new-tab page — calendar, to-dos, scratchpad, weather.
 
+# Wrap every page in the theme layout (pulls in _includes/head-custom.html,
+# which carries the Google site-verification meta tag).
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
 # Only the docs need to be built as pages; keep the extension source out.
 exclude:
   - "*.js"
