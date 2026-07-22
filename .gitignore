@@ -1,0 +1,10 @@
+# Build artifacts
+release.zip
+
+# Private keys must never enter history (key.pem in a --with-key zip,
+# or any stray copy of the extension signing key)
+*.pem
+*.key
+
+# macOS
+.DS_Store

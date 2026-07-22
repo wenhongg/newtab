@@ -1,0 +1,417 @@
+.day {
+  width: min(560px, 90vw);
+  padding: 9vh 0 12rem;
+}
+
+.day-header {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.weekday {
+  font-size: 0.85rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.date-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.date-numeral {
+  font-family: var(--serif);
+  font-size: clamp(5rem, 12vh, 8rem);
+  font-weight: 400;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.month-year {
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.month-year::after {
+  content: " \2197";
+  font-size: 0.8em;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.month-year:hover {
+  color: var(--accent);
+}
+
+.month-year:hover::after {
+  opacity: 1;
+}
+
+.tz-label {
+  margin-top: 0.35rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  opacity: 0.75;
+}
+
+.fetch-stamp {
+  margin-top: 1.4rem;
+  text-align: center;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  opacity: 0.75;
+}
+
+.nav-btn {
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.nav-btn:hover {
+  color: var(--text);
+  border-color: var(--muted);
+}
+
+/* Overlays the empty right side of the date row so its appearance
+   never shifts the layout below. */
+.today-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ---- Week strip ---- */
+
+.week-strip {
+  display: flex;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-bottom: 2.5rem;
+}
+
+.ws-cell {
+  width: 3.1rem;
+  padding: 0.45rem 0 0.5rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: none;
+  text-align: center;
+  font-family: var(--sans);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.ws-cell:hover {
+  border-color: var(--line);
+}
+
+.ws-dow {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ws-num {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  margin: 0.1rem 0 0.2rem;
+}
+
+.ws-dots {
+  height: 0.4rem;
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+.ws-dots i,
+.mc-dots i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.ws-cell.today {
+  border-color: var(--accent);
+}
+
+.ws-cell.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.ws-cell.selected .ws-dow,
+.ws-cell.selected .ws-num {
+  color: #fff;
+}
+
+.ws-cell.selected .ws-dots i {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* ---- Month overlay ---- */
+
+.month-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: rgba(247, 244, 236, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.month-card {
+  width: min(620px, 92vw);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 2rem 2.2rem 1.6rem;
+  box-shadow: 0 20px 50px rgba(60, 50, 20, 0.18);
+}
+
+.mc-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+}
+
+.mc-title {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  font-weight: 400;
+}
+
+.mc-btn {
+  background: none;
+  border: none;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+}
+
+.mc-btn:hover {
+  color: var(--accent);
+}
+
+.mc-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.mc-dow {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  padding-bottom: 0.5rem;
+}
+
+.mc-day {
+  height: 4rem;
+  border-radius: 8px;
+  padding-top: 0.4rem;
+  border: 1px solid transparent;
+  background: none;
+  text-align: center;
+  font-family: var(--sans);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.mc-day:hover {
+  border-color: var(--line);
+}
+
+.mc-num {
+  font-family: var(--serif);
+  font-size: 1rem;
+}
+
+.mc-dots {
+  height: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  margin-top: 0.25rem;
+}
+
+.mc-day.dim .mc-num {
+  color: var(--line);
+}
+
+.mc-day.today {
+  border-color: var(--accent);
+}
+
+.mc-day.selected {
+  background: var(--accent);
+}
+
+.mc-day.selected .mc-num {
+  color: #fff;
+}
+
+.mc-day.selected .mc-dots i {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.mc-hint {
+  margin-top: 1.1rem;
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.mc-hint kbd {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0 0.3rem;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  background: var(--bg);
+}
+
+.notice {
+  text-align: center;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.connect-btn {
+  margin-top: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.7rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-family: var(--sans);
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(60, 50, 20, 0.08);
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.connect-btn svg {
+  flex-shrink: 0;
+}
+
+.connect-btn:hover {
+  border-color: var(--muted);
+  box-shadow: 0 3px 10px rgba(60, 50, 20, 0.12);
+}
+
+.agenda-status {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+}
+
+.event-list {
+  list-style: none;
+  border-left: 1px solid var(--line);
+}
+
+.event {
+  position: relative;
+  padding: 0.55rem 0 0.55rem 1.5rem;
+}
+
+.event::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: 1.15rem;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.event-time {
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.event-title {
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+.event-location {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Reserve room so the badge never overlaps long titles or locations. */
+.event.has-soon {
+  padding-right: 5.5rem;
+}
+
+.event-soon {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .day {
+    padding-bottom: 2rem;
+  }
+
+  /* Too little horizontal room next to the nav arrows at this width. */
+  .today-btn {
+    display: none;
+  }
+}

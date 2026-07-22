@@ -1,0 +1,76 @@
+.todo {
+  left: 2rem;
+  max-height: 45vh;
+}
+
+.todo-list {
+  list-style: none;
+  overflow-y: auto;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0;
+}
+
+.todo-item input[type="checkbox"] {
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.todo-text {
+  flex: 1;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.todo-item.done .todo-text {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.todo-delete {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1rem;
+  cursor: pointer;
+  visibility: hidden;
+}
+
+.todo-item:hover .todo-delete {
+  visibility: visible;
+}
+
+.todo-delete:hover {
+  color: var(--text);
+}
+
+.todo-status {
+  font-size: 0.8rem;
+  color: var(--accent);
+  padding-top: 0.4rem;
+}
+
+.todo-form input {
+  width: 100%;
+  margin-top: 0.5rem;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--line);
+  padding: 0.6rem 0 0.2rem;
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
+.todo-form input::placeholder {
+  color: var(--muted);
+}
+
+.todo-form input:focus {
+  outline: none;
+  border-top-color: var(--muted);
+}

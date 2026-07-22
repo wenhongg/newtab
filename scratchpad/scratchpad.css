@@ -1,0 +1,37 @@
+.scratchpad {
+  right: 2rem;
+}
+
+.scratchpad-input {
+  width: 100%;
+  min-height: 9.6rem;
+  border: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 1.55rem,
+    var(--line) 1.55rem,
+    var(--line) calc(1.55rem + 1px)
+  );
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  line-height: 1.6rem;
+  color: var(--text);
+  resize: none;
+  outline: none;
+}
+
+.scratchpad-input::placeholder {
+  color: var(--muted);
+}
+
+.scratchpad-status {
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+.scratchpad-status.error {
+  color: var(--accent);
+}
