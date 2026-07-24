@@ -86,6 +86,12 @@ export async function fetchMergedEvents(start, end) {
   return [...allDay, ...timed];
 }
 
+// Forget the fetched calendar list (kept prefs intact) — used on sign-out.
+export function resetCache() {
+  listCache = null;
+  listPromise = null;
+}
+
 export function onOverridesChanged(callback) {
   syncOnChanged(KEY, (value) => {
     overrides = value || {};

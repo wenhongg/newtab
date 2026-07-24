@@ -133,12 +133,14 @@ els.overlay.addEventListener("click", (e) => {
   if (e.target === els.overlay) close();
 });
 
-// Picker toggles invalidate the month's counts.
-document.addEventListener("calendarschange", () => {
-  countsMonthMs = null;
-  counts = new Map();
-  if (isOpen()) render();
-});
+// Picker toggles invalidate the month's counts; sign-out drops them too.
+for (const eventName of ["calendarschange", "signedout"]) {
+  document.addEventListener(eventName, () => {
+    countsMonthMs = null;
+    counts = new Map();
+    if (isOpen()) render();
+  });
+}
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && isOpen()) {

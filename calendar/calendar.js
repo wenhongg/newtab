@@ -31,9 +31,16 @@ const els = {
   connectBtn: document.getElementById("connect-btn"),
 };
 
+const emptyWeekCache = () => ({
+  startMs: null,
+  events: [],
+  counts: new Map(),
+  fetchedAt: null,
+});
+
 let viewDate = startOfDay(new Date());
 let weekSeq = 0; // guards against stale responses on rapid navigation
-let weekCache = { startMs: null, events: [], counts: new Map(), fetchedAt: null };
+let weekCache = emptyWeekCache();
 
 function formatTime(date) {
   return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
@@ -230,9 +237,20 @@ els.connectBtn.addEventListener("click", async () => {
   }
 });
 
+// Sign-out from the picker: drop everything and show the connect state
+// directly (revocation may still be propagating, so don't refetch).
+document.addEventListener("signedout", () => {
+  weekCache = emptyWeekCache();
+  renderWeekStrip();
+  els.eventList.textContent = "";
+  els.fetchStamp.classList.add("hidden");
+  setAgendaStatus("");
+  els.connectPanel.classList.remove("hidden");
+});
+
 // Picker toggles (this tab or another) change what should be shown.
 document.addEventListener("calendarschange", () => {
-  weekCache = { startMs: null, events: [], counts: new Map(), fetchedAt: null };
+  weekCache = emptyWeekCache();
   renderWeekStrip();
   loadDay();
 });

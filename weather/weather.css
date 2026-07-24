@@ -20,19 +20,8 @@
 }
 
 .weather-set-btn {
-  background: none;
-  border: none;
-  font-family: var(--sans);
   font-size: 0.75rem;
   letter-spacing: 0.08em;
-  color: var(--muted);
-  cursor: pointer;
-  text-decoration: underline dotted;
-  text-underline-offset: 3px;
-}
-
-.weather-set-btn:hover {
-  color: var(--accent);
 }
 
 .weather-input {

@@ -34,6 +34,21 @@ body {
   outline-offset: 2px;
 }
 
+/* Quiet dotted-underline text buttons (weather city, calendars, sign out). */
+.text-btn {
+  background: none;
+  border: none;
+  font-family: var(--sans);
+  color: var(--muted);
+  cursor: pointer;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+.text-btn:hover {
+  color: var(--accent);
+}
+
 /* Shared card chrome for the corner panels (to-do, scratchpad). */
 .panel {
   position: fixed;

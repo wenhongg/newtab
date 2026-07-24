@@ -78,19 +78,8 @@
 }
 
 .cal-btn {
-  background: none;
-  border: none;
-  font-family: var(--sans);
   font-size: 0.7rem;
   letter-spacing: 0.12em;
-  color: var(--muted);
-  cursor: pointer;
-  text-decoration: underline dotted;
-  text-underline-offset: 3px;
-}
-
-.cal-btn:hover {
-  color: var(--accent);
 }
 
 .nav-btn {
@@ -270,6 +259,18 @@
   color: var(--muted);
   font-size: 0.9rem;
   padding: 0.5rem 0;
+}
+
+.cal-signout {
+  display: block;
+  margin: 0.9rem auto 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+}
+
+.cal-signout:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
 .month-card {

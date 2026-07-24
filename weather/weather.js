@@ -93,7 +93,7 @@ function renderSummary(summary) {
 function renderSetCity() {
   els.line.textContent = "";
   const btn = document.createElement("button");
-  btn.className = "weather-set-btn";
+  btn.className = "text-btn weather-set-btn";
   btn.textContent = "set weather city";
   btn.addEventListener("click", (e) => {
     e.stopPropagation();

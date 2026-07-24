@@ -7,13 +7,16 @@ import {
   isEnabled,
   setOverride,
   onOverridesChanged,
+  resetCache,
 } from "./calendars.js";
+import { signOut } from "./api.js";
 import { isOpen as monthIsOpen } from "./month.js";
 
 const els = {
   overlay: document.getElementById("cal-overlay"),
   list: document.getElementById("cal-list"),
   trigger: document.getElementById("cal-btn"),
+  signout: document.getElementById("cal-signout"),
 };
 
 export function isOpen() {
@@ -83,6 +86,18 @@ function close() {
 }
 
 els.trigger.addEventListener("click", open);
+
+els.signout.addEventListener("click", async () => {
+  els.signout.disabled = true;
+  await signOut();
+  // Deliberately keep calendarOverrides (and all other prefs): the common
+  // case is reconnecting the same account, and stale overrides for a
+  // different account simply never match its calendar ids.
+  resetCache();
+  els.signout.disabled = false;
+  close();
+  document.dispatchEvent(new Event("signedout"));
+});
 
 els.overlay.addEventListener("click", (e) => {
   if (e.target === els.overlay) close();

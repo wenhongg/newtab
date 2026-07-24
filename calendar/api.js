@@ -37,6 +37,31 @@ function rfc3339(date) {
   );
 }
 
+// Revoke the Google grant and drop Chrome's cached token, so the next
+// connect shows the full consent screen again.
+export async function signOut() {
+  let token;
+  try {
+    token = await getToken(false);
+  } catch {
+    return; // nothing to sign out of
+  }
+  try {
+    // Server-side revocation is fire-and-forget; the opaque no-cors
+    // response doesn't matter and failures still leave us signed out
+    // locally. POST body keeps the token out of URL logs.
+    await fetch("https://oauth2.googleapis.com/revoke", {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ token }),
+    });
+  } catch {
+    // best-effort
+  }
+  await removeCachedToken(token);
+}
+
 export class ApiError extends Error {
   constructor(status) {
     super(`Calendar API error (${status})`);

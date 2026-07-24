@@ -44,10 +44,33 @@ instant. Everything runs in the browser: no backend, no analytics — see
 ## Install
 
 - **Chrome Web Store:** _coming soon._
-- **From source:** clone this repo, open `chrome://extensions`, enable
-  Developer mode, click **Load unpacked**, and select the folder. To
-  connect Google Calendar you need a Google Cloud OAuth client — follow
-  [SETUP.md](SETUP.md) (about 5 minutes, one time).
+- **From source:** see below.
+
+> **WIP:** Google OAuth verification and Chrome Web Store review are in
+> progress. Until they complete, connecting Google Calendar shows an
+> "unverified app" warning (click *Advanced → continue* to proceed) — the
+> app works fully; the warning disappears once verification is granted.
+
+## Local setup
+
+No build step, no dependencies — the repo is the extension.
+
+```sh
+git clone https://github.com/wenhongg/newtab.git
+```
+
+1. Open `chrome://extensions` in Chrome.
+2. Turn on **Developer mode** (toggle, top right).
+3. Click **Load unpacked** and select the cloned `newtab` folder.
+4. Open a new tab — the to-do list, scratchpad, and weather (after typing a
+   city) work immediately.
+5. To connect Google Calendar you need your own Google Cloud OAuth client
+   (the one shipped in `manifest.json` only works for the published store
+   build). Follow [SETUP.md](SETUP.md) — about 5 minutes, one time.
+
+**Developing:** edit the files, then hit the reload icon on the extension's
+card in `chrome://extensions` and open a new tab. `./pack.sh` builds a
+store-ready `release.zip` (strips the dev `key` from the manifest).
 
 ## Structure
 
