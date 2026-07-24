@@ -61,7 +61,7 @@ git clone https://github.com/wenhongg/daytab.git
 
 1. Open `chrome://extensions` in Chrome.
 2. Turn on **Developer mode** (toggle, top right).
-3. Click **Load unpacked** and select the cloned `newtab` folder.
+3. Click **Load unpacked** and select the cloned `daytab` folder.
 4. Open a new tab — the to-do list, scratchpad, and weather (after typing a
    city) work immediately.
 5. Click **Connect Google Calendar** — no OAuth setup needed. The
