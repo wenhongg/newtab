@@ -65,12 +65,12 @@ function renderHeader() {
     `${viewDate.getFullYear()}/${viewDate.getMonth() + 1}/${viewDate.getDate()}`;
   els.todayBtn.classList.toggle("hidden", isToday(viewDate));
 
-  // System timezone; the offset is per viewed date so DST reads correctly.
-  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const offset = new Intl.DateTimeFormat([], { timeZoneName: "shortOffset" })
+  // System timezone; the name is per viewed date so DST reads correctly.
+  const zoneName = new Intl.DateTimeFormat([], { timeZoneName: "long" })
     .formatToParts(viewDate)
     .find((part) => part.type === "timeZoneName")?.value;
-  els.tzLabel.textContent = offset ? `${zone} · ${offset}` : zone;
+  els.tzLabel.textContent =
+    zoneName ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
 
 export function goToDate(date) {
