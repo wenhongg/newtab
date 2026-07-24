@@ -64,9 +64,13 @@ git clone https://github.com/wenhongg/newtab.git
 3. Click **Load unpacked** and select the cloned `newtab` folder.
 4. Open a new tab — the to-do list, scratchpad, and weather (after typing a
    city) work immediately.
-5. To connect Google Calendar you need your own Google Cloud OAuth client
-   (the one shipped in `manifest.json` only works for the published store
-   build). Follow [SETUP.md](SETUP.md) — about 5 minutes, one time.
+5. Click **Connect Google Calendar** — no OAuth setup needed. The
+   extension ID is pinned in `manifest.json`, so the shipped OAuth client
+   works for from-source installs too. (Until Google's verification
+   completes you'll see an "unverified app" screen — *Advanced → continue*.)
+
+Only if you fork the project and want it running under your own Google
+Cloud project do you need your own OAuth client — see [SETUP.md](SETUP.md).
 
 **Developing:** edit the files, then hit the reload icon on the extension's
 card in `chrome://extensions` and open a new tab. `./pack.sh` builds a

@@ -1,6 +1,13 @@
-# Setup
+# OAuth setup (forks only)
 
-One-time setup to connect the extension to Google Calendar.
+**Regular users don't need any of this.** The extension ID is pinned by the
+`key` in `manifest.json`, so the OAuth client shipped in the manifest works
+for both store installs and from-source installs — just click **Connect
+Google Calendar**.
+
+Follow these steps only if you're forking the project and want it to run
+under your own Google Cloud project (your own quota, branding, and
+verification).
 
 ## 1. Load the extension
 
