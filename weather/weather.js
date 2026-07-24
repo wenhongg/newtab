@@ -8,6 +8,7 @@ import { getCity, setCity } from "./store.js";
 
 const els = {
   line: document.getElementById("weather-line"),
+  dateNote: document.getElementById("weather-date-note"),
 };
 
 const PERIODS = [
@@ -26,6 +27,21 @@ let fetchSeq = 0;
 function clearLine() {
   els.line.textContent = "";
   els.line.classList.add("hidden");
+  hideDateNote();
+}
+
+function hideDateNote() {
+  els.dateNote.textContent = "";
+  els.dateNote.classList.add("hidden");
+}
+
+function renderDateNote(day) {
+  els.dateNote.textContent = `forecast for ${day.toLocaleDateString([], {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  })}`;
+  els.dateNote.classList.remove("hidden");
 }
 
 // WMO weather code -> monochrome glyph (︎ forces text presentation).
@@ -68,7 +84,7 @@ function summarizeDay(day) {
   return summary;
 }
 
-function renderSummary(summary) {
+function renderSummary(summary, day) {
   els.line.textContent = "";
   const cityName = document.createElement("span");
   cityName.className = "wx-city";
@@ -88,6 +104,7 @@ function renderSummary(summary) {
   });
   els.line.title = `Weather in ${city.name} — click to change city`;
   els.line.classList.remove("hidden");
+  renderDateNote(day);
 }
 
 function renderSetCity() {
@@ -101,6 +118,7 @@ function renderSetCity() {
   });
   els.line.appendChild(btn);
   els.line.classList.remove("hidden");
+  hideDateNote();
 }
 
 function renderCityInput() {
@@ -142,6 +160,7 @@ function renderCityInput() {
   });
   els.line.appendChild(input);
   els.line.classList.remove("hidden");
+  hideDateNote();
   input.focus();
 }
 
@@ -177,9 +196,10 @@ async function update() {
   }
   try {
     await ensureForecast();
-    const summary = summarizeDay(getViewDate());
+    const day = getViewDate();
+    const summary = summarizeDay(day);
     // Quietly absent for days the forecast can't cover.
-    summary ? renderSummary(summary) : clearLine();
+    summary ? renderSummary(summary, day) : clearLine();
   } catch {
     clearLine(); // weather is a nicety — never surface errors on the page
   }

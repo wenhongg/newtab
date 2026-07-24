@@ -104,6 +104,9 @@ export async function fetchEventsForRange(calendarId, start, end) {
     singleEvents: "true",
     orderBy: "startTime",
     maxResults: "250",
+    // Only what the views render — full event resources (attendees,
+    // descriptions, …) would bloat the persisted cache for nothing.
+    fields: "items(id,summary,location,start,end)",
   });
   const data = await authorizedGet(
     `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?${params}`

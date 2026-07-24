@@ -1,9 +1,24 @@
+/* Pinned to the top-right corner, echoing the to-do/scratchpad panels. */
+.weather-corner {
+  position: fixed;
+  top: 1.6rem;
+  right: 2rem;
+  text-align: right;
+}
+
 .weather-line {
-  margin-top: 0.7rem;
   font-size: 0.8rem;
   letter-spacing: 0.06em;
   color: var(--muted);
   cursor: pointer;
+}
+
+.weather-date-note {
+  margin-top: 0.2rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  opacity: 0.75;
 }
 
 .weather-line .sep {
@@ -43,4 +58,11 @@
 
 .weather-input::placeholder {
   color: var(--muted);
+}
+
+/* No corner to pin to once the panels stack; the header needs the width. */
+@media (max-width: 700px) {
+  .weather-corner {
+    display: none;
+  }
 }

@@ -1,9 +1,12 @@
 // Day view: date header, prev/next navigation, week strip, agenda rendering.
 // Events are fetched one week at a time and cached; day navigation within
-// the cached week renders instantly without refetching.
+// the cached week renders instantly without refetching. The current week is
+// also persisted to chrome.storage.local so new tabs render instantly and
+// only hit the network once the cache goes stale (or on manual refresh).
 
 import { ApiError, clientIdConfigured, getToken } from "./api.js";
 import { fetchMergedEvents } from "./calendars.js";
+import { localGet, localOnChanged, localSet } from "../shared/storage.js";
 import {
   addDays,
   dateKey,
@@ -28,8 +31,12 @@ const els = {
   agendaStatus: document.getElementById("agenda-status"),
   eventList: document.getElementById("event-list"),
   fetchStamp: document.getElementById("fetch-stamp"),
+  refreshBtn: document.getElementById("refresh-btn"),
   connectBtn: document.getElementById("connect-btn"),
 };
+
+const CACHE_KEY = "weekEventsCache";
+const EVENTS_TTL_MS = 5 * 60 * 1000;
 
 const emptyWeekCache = () => ({
   startMs: null,
@@ -183,49 +190,122 @@ function showAgendaFromCache() {
   renderEvents(eventsOnDay(weekCache.events, viewDate));
   els.fetchStamp.textContent = `updated ${formatTime(weekCache.fetchedAt)}`;
   els.fetchStamp.classList.remove("hidden");
+  els.refreshBtn.classList.remove("hidden");
   els.connectPanel.classList.add("hidden");
 }
 
-async function loadDay() {
-  const weekStart = weekStartOf(viewDate);
-  if (hasCachedWeek(weekStart)) {
-    showAgendaFromCache(); // instant — no request, no loading flicker
-    return;
-  }
+function cacheIsStale() {
+  return Date.now() - weekCache.fetchedAt.getTime() >= EVENTS_TTL_MS;
+}
 
+// Storage is an external boundary — never assume a stored record's shape
+// (a partial write or future format change must not break rendering).
+function isValidStored(stored) {
+  return (
+    Boolean(stored) &&
+    typeof stored.startMs === "number" &&
+    typeof stored.fetchedAt === "number" &&
+    Array.isArray(stored.events) &&
+    stored.events.every((event) => event && typeof event === "object")
+  );
+}
+
+// Rebuild the in-memory cache from its stored form (counts and Dates don't
+// survive JSON serialization).
+function hydrateCache(stored) {
+  weekCache = {
+    startMs: stored.startMs,
+    events: stored.events,
+    counts: eventCountsByDay(stored.events),
+    fetchedAt: new Date(stored.fetchedAt),
+  };
+}
+
+// `background` keeps whatever is on screen (cached events stay up, no
+// loading flicker) and stays quiet on failure.
+async function fetchWeek(background) {
+  const weekStart = weekStartOf(viewDate);
   const seq = ++weekSeq;
-  els.eventList.textContent = "";
-  els.fetchStamp.classList.add("hidden");
-  setAgendaStatus("Loading…");
+  if (!background) {
+    els.eventList.textContent = "";
+    els.fetchStamp.classList.add("hidden");
+    setAgendaStatus("Loading…");
+  }
   try {
     const events = await fetchMergedEvents(weekStart, addDays(weekStart, 7));
     if (seq !== weekSeq) return; // a newer request superseded this one
+    // This tab went to the disconnected state (sign-out here or in another
+    // tab) while the fetch was in flight — don't resurrect cleared data.
+    if (background && !els.connectPanel.classList.contains("hidden")) return;
     // The user may have navigated to a different week and back while this
     // fetch was in flight — only keep the result if it's still on screen.
     if (weekStart.getTime() !== weekStartOf(viewDate).getTime()) return;
-    weekCache = {
-      startMs: weekStart.getTime(),
-      events,
-      counts: eventCountsByDay(events),
-      fetchedAt: new Date(),
-    };
+    const stored = { startMs: weekStart.getTime(), events, fetchedAt: Date.now() };
+    hydrateCache(stored);
     renderWeekStrip();
     showAgendaFromCache();
+    // Best-effort persist; other open tabs pick it up via localOnChanged.
+    localSet(CACHE_KEY, stored).catch(() => {});
+    return true;
   } catch (err) {
     if (seq !== weekSeq) return;
-    if (err instanceof ApiError) {
-      setAgendaStatus(`Couldn't load events. ${err.message}`);
+    if (err instanceof ApiError || err instanceof TypeError) {
+      // Server or network trouble — transient, keep showing what we had.
+      if (!background) {
+        setAgendaStatus(
+          err instanceof ApiError
+            ? `Couldn't load events. ${err.message}`
+            : "Couldn't load events. Check your connection."
+        );
+      }
     } else {
-      // Not signed in (or consent revoked) — offer interactive connect.
-      setAgendaStatus("");
-      els.connectPanel.classList.remove("hidden");
+      // Not signed in — including consent revoked from Google's side, which
+      // background revalidation must catch too: stop showing and holding
+      // events we're no longer authorized to have. Clearing storage carries
+      // this to every other open tab via localOnChanged.
+      disconnect();
     }
+    return false;
+  }
+}
+
+// Renders from the in-memory cache when it covers the viewed week, quietly
+// revalidating once it outlives the TTL. False on a cache miss.
+function refreshIfCached() {
+  if (!hasCachedWeek(weekStartOf(viewDate))) return false;
+  showAgendaFromCache(); // instant — no request, no loading flicker
+  if (cacheIsStale()) {
+    fetchWeek(true); // revalidate behind the cached render
+  }
+  return true;
+}
+
+function loadDay() {
+  if (!refreshIfCached()) {
+    fetchWeek(false);
   }
 }
 
 els.prevDay.addEventListener("click", () => goToDate(addDays(viewDate, -1)));
 els.nextDay.addEventListener("click", () => goToDate(addDays(viewDate, 1)));
 els.todayBtn.addEventListener("click", () => goToDate(new Date()));
+
+// Manual refresh ignores the TTL. With events on screen it fetches quietly
+// behind them, using the stamp for feedback — a silent failure would make
+// the button look dead.
+els.refreshBtn.addEventListener("click", async () => {
+  if (!hasCachedWeek(weekStartOf(viewDate))) {
+    fetchWeek(false);
+    return;
+  }
+  els.fetchStamp.textContent = "refreshing…";
+  const ok = await fetchWeek(true);
+  // Success and navigation both re-render the stamp on their own; the
+  // hasCachedWeek check skips states where the agenda was torn down.
+  if (ok === false && hasCachedWeek(weekStartOf(viewDate))) {
+    els.fetchStamp.textContent = "couldn't refresh";
+  }
+});
 
 els.connectBtn.addEventListener("click", async () => {
   try {
@@ -237,35 +317,78 @@ els.connectBtn.addEventListener("click", async () => {
   }
 });
 
-// Sign-out from the picker: drop everything and show the connect state
-// directly (revocation may still be propagating, so don't refetch).
-document.addEventListener("signedout", () => {
+// Drop everything on screen and show the connect state.
+function showDisconnected() {
   weekCache = emptyWeekCache();
   renderWeekStrip();
   els.eventList.textContent = "";
   els.fetchStamp.classList.add("hidden");
+  els.refreshBtn.classList.add("hidden"); // nothing to refresh while disconnected
   setAgendaStatus("");
   els.connectPanel.classList.remove("hidden");
+}
+
+// Disconnected for real (signed out or consent revoked) — also stop keeping
+// events on disk, which carries the state to other tabs via localOnChanged.
+function disconnect() {
+  localSet(CACHE_KEY, null).catch(() => {});
+  showDisconnected();
+}
+
+// Sign-out from the picker: show the connect state directly (revocation may
+// still be propagating, so don't refetch).
+document.addEventListener("signedout", () => {
+  weekSeq++; // discard any fetch in flight — it would resurrect the cache
+  disconnect();
 });
 
-// Picker toggles (this tab or another) change what should be shown.
+// Picker toggles (this tab or another) change what should be shown. The
+// persisted cache goes too — it holds the old calendar selection and would
+// otherwise look fresh to a newly opened tab.
 document.addEventListener("calendarschange", () => {
   weekCache = emptyWeekCache();
+  localSet(CACHE_KEY, null).catch(() => {});
   renderWeekStrip();
   loadDay();
 });
 
-// Keep the "in N min" badges honest if a tab stays open.
-setInterval(() => {
-  if (hasCachedWeek(weekStartOf(viewDate))) {
-    showAgendaFromCache();
+// Cross-tab sync: adopt another tab's refresh when it's the week on screen,
+// and treat a cleared cache as that tab's sign-out (or calendar change — in
+// that case the calendarschange broadcast refetches right after, which
+// hides the connect panel again).
+localOnChanged(CACHE_KEY, (stored) => {
+  if (!stored) {
+    showDisconnected();
+    return;
   }
-}, 60000);
+  if (!isValidStored(stored)) return;
+  if (stored.startMs !== weekStartOf(viewDate).getTime()) return;
+  if (stored.fetchedAt === weekCache.fetchedAt?.getTime()) return; // own write echoing back
+  hydrateCache(stored);
+  renderWeekStrip();
+  showAgendaFromCache();
+});
 
-renderHeader();
-renderWeekStrip();
-if (clientIdConfigured()) {
+// Keep the "in N min" badges honest if a tab stays open, and revalidate
+// once the cache outlives its TTL — this is the "fetch at intervals" path.
+setInterval(refreshIfCached, 60000);
+
+async function init() {
+  renderHeader();
+  renderWeekStrip();
+  if (!clientIdConfigured()) {
+    els.setupNotice.classList.remove("hidden");
+    els.refreshBtn.classList.add("hidden"); // nothing to refresh yet
+    return;
+  }
+  // Warm the in-memory cache from the last persisted fetch (any tab's), so
+  // a new tab renders instantly; loadDay revalidates if it's stale.
+  const stored = await localGet(CACHE_KEY, null);
+  if (isValidStored(stored) && stored.startMs === weekStartOf(viewDate).getTime()) {
+    hydrateCache(stored);
+    renderWeekStrip();
+  }
   loadDay();
-} else {
-  els.setupNotice.classList.remove("hidden");
 }
+
+init();

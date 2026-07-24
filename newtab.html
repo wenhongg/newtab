@@ -30,7 +30,6 @@
       </div>
       <a class="month-year" id="month-year" target="_blank" rel="noopener" title="Open in Google Calendar"></a>
       <p class="tz-label" id="tz-label"></p>
-      <p class="weather-line hidden" id="weather-line"></p>
     </header>
 
     <nav class="week-strip" id="week-strip" aria-label="This week"></nav>
@@ -56,10 +55,16 @@
       <ul id="event-list" class="event-list"></ul>
       <div class="agenda-footer">
         <p id="fetch-stamp" class="fetch-stamp hidden"></p>
+        <button id="refresh-btn" class="text-btn refresh-btn" title="Refresh events" aria-label="Refresh events">&#8635;</button>
         <button id="cal-btn" class="text-btn cal-btn" title="Choose calendars (C)">calendars</button>
       </div>
     </section>
   </main>
+
+  <aside class="weather-corner" aria-label="Weather">
+    <p class="weather-line hidden" id="weather-line"></p>
+    <p class="weather-date-note hidden" id="weather-date-note"></p>
+  </aside>
 
   <aside class="panel todo" aria-label="To-do list">
     <h2 class="panel-title">To-do</h2>
