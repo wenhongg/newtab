@@ -56,7 +56,7 @@ instant. Everything runs in the browser: no backend, no analytics — see
 No build step, no dependencies — the repo is the extension.
 
 ```sh
-git clone https://github.com/wenhongg/newtab.git
+git clone https://github.com/wenhongg/daytab.git
 ```
 
 1. Open `chrome://extensions` in Chrome.
