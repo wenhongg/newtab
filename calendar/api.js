@@ -44,17 +44,7 @@ export class ApiError extends Error {
   }
 }
 
-// Events between two local-time Dates (start inclusive, end exclusive).
-export async function fetchEventsForRange(start, end) {
-  const params = new URLSearchParams({
-    timeMin: rfc3339(start),
-    timeMax: rfc3339(end),
-    singleEvents: "true",
-    orderBy: "startTime",
-    maxResults: "250",
-  });
-  const url = `https://www.googleapis.com/calendar/v3/calendars/primary/events?${params}`;
-
+async function authorizedGet(url) {
   let token = await getToken(false);
   let res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
   if (res.status === 401) {
@@ -65,6 +55,33 @@ export async function fetchEventsForRange(start, end) {
   if (!res.ok) {
     throw new ApiError(res.status);
   }
-  const data = await res.json();
+  return res.json();
+}
+
+// The calendars this account can see (id, name, color, primary/selected flags).
+export async function fetchCalendarList() {
+  const params = new URLSearchParams({
+    // Silently caps accounts with >250 calendars — fine for a personal dashboard.
+    maxResults: "250",
+    fields: "items(id,summary,backgroundColor,primary,selected)",
+  });
+  const data = await authorizedGet(
+    `https://www.googleapis.com/calendar/v3/users/me/calendarList?${params}`
+  );
+  return data.items || [];
+}
+
+// Events between two local-time Dates (start inclusive, end exclusive).
+export async function fetchEventsForRange(calendarId, start, end) {
+  const params = new URLSearchParams({
+    timeMin: rfc3339(start),
+    timeMax: rfc3339(end),
+    singleEvents: "true",
+    orderBy: "startTime",
+    maxResults: "250",
+  });
+  const data = await authorizedGet(
+    `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?${params}`
+  );
   return data.items || [];
 }

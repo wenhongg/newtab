@@ -1,8 +1,9 @@
 // Month overlay: event-density grid; open with M or by clicking the date numeral.
 
-import { fetchEventsForRange } from "./api.js";
+import { fetchMergedEvents } from "./calendars.js";
 import { addDays, dateKey, eventCountsByDay, isToday, weekStartOf } from "./dates.js";
 import { getViewDate, goToDate } from "./calendar.js";
+import { isOpen as pickerIsOpen } from "./picker.js";
 
 const els = {
   overlay: document.getElementById("month-overlay"),
@@ -23,7 +24,7 @@ function firstOfMonth(date) {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 }
 
-function isOpen() {
+export function isOpen() {
   return !els.overlay.classList.contains("hidden");
 }
 
@@ -102,7 +103,7 @@ async function loadCounts() {
   const seq = ++loadSeq;
   const rangeStart = monthDate;
   try {
-    const events = await fetchEventsForRange(
+    const events = await fetchMergedEvents(
       rangeStart,
       new Date(rangeStart.getFullYear(), rangeStart.getMonth() + 1, 1)
     );
@@ -132,6 +133,13 @@ els.overlay.addEventListener("click", (e) => {
   if (e.target === els.overlay) close();
 });
 
+// Picker toggles invalidate the month's counts.
+document.addEventListener("calendarschange", () => {
+  countsMonthMs = null;
+  counts = new Map();
+  if (isOpen()) render();
+});
+
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && isOpen()) {
     close();
@@ -141,6 +149,7 @@ document.addEventListener("keydown", (e) => {
   if (
     (e.key === "m" || e.key === "M") &&
     !isOpen() &&
+    !pickerIsOpen() &&
     !typing &&
     !e.metaKey &&
     !e.ctrlKey &&

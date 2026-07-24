@@ -62,13 +62,35 @@
   opacity: 0.75;
 }
 
-.fetch-stamp {
+.agenda-footer {
   margin-top: 1.4rem;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.9rem;
+}
+
+.fetch-stamp {
   font-size: 0.7rem;
   letter-spacing: 0.12em;
   color: var(--muted);
   opacity: 0.75;
+}
+
+.cal-btn {
+  background: none;
+  border: none;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  cursor: pointer;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+.cal-btn:hover {
+  color: var(--accent);
 }
 
 .nav-btn {
@@ -179,7 +201,8 @@
 
 /* ---- Month overlay ---- */
 
-.month-overlay {
+.month-overlay,
+.cal-overlay {
   position: fixed;
   inset: 0;
   z-index: 10;
@@ -189,13 +212,69 @@
   justify-content: center;
 }
 
-.month-card {
-  width: min(620px, 92vw);
+.month-card,
+.cal-card {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 14px;
-  padding: 2rem 2.2rem 1.6rem;
   box-shadow: 0 20px 50px rgba(60, 50, 20, 0.18);
+}
+
+.cal-card {
+  width: min(380px, 92vw);
+  padding: 1.6rem 1.8rem 1.2rem;
+}
+
+.cal-title {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: 400;
+  margin-bottom: 0.8rem;
+}
+
+.cal-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.45rem 0;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.cal-swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.cal-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cal-sub {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.cal-row input[type="checkbox"] {
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.cal-empty {
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 0.5rem 0;
+}
+
+.month-card {
+  width: min(620px, 92vw);
+  padding: 2rem 2.2rem 1.6rem;
 }
 
 .mc-header {
@@ -290,7 +369,8 @@
   background: rgba(255, 255, 255, 0.8);
 }
 
-.mc-hint {
+.mc-hint,
+.cal-hint {
   margin-top: 1.1rem;
   text-align: center;
   font-size: 0.72rem;
@@ -298,7 +378,8 @@
   color: var(--muted);
 }
 
-.mc-hint kbd {
+.mc-hint kbd,
+.cal-hint kbd {
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 0 0.3rem;
@@ -357,15 +438,14 @@
   padding: 0.55rem 0 0.55rem 1.5rem;
 }
 
-.event::before {
-  content: "";
+.event-dot {
   position: absolute;
   left: -3px;
   top: 1.15rem;
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--accent); /* per-calendar color set inline when known */
 }
 
 .event-time {

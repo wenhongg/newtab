@@ -17,7 +17,8 @@ One-time setup to connect the extension to Google Calendar.
 2. **APIs & Services → Library** → search for **Google Calendar API** → **Enable**.
 3. **APIs & Services → OAuth consent screen**:
    - User type: **External**, then fill in the app name and your email.
-   - Add the scope `https://www.googleapis.com/auth/calendar.events.readonly`.
+   - Add the scopes `https://www.googleapis.com/auth/calendar.events.readonly`
+     and `https://www.googleapis.com/auth/calendar.calendarlist.readonly`.
    - Under **Test users**, add your own Google account. Leave the app in
      **Testing** status — no verification needed for personal use.
 4. **APIs & Services → Credentials → Create Credentials → OAuth client ID**:
@@ -37,7 +38,10 @@ One-time setup to connect the extension to Google Calendar.
 
 ## Notes
 
-- Events are read from your **primary** calendar only; shared or secondary
-  calendars aren't shown.
+- Events are read from all calendars you enable in the picker (press `C`);
+  by default the selection mirrors the calendars ticked in Google
+  Calendar's own sidebar.
+- After an update that adds a scope, click **Connect Google Calendar** once
+  to re-consent.
 - To-dos are stored in `chrome.storage.sync`, so they follow your Chrome
   profile across machines.

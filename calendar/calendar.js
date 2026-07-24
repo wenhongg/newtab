@@ -2,7 +2,8 @@
 // Events are fetched one week at a time and cached; day navigation within
 // the cached week renders instantly without refetching.
 
-import { ApiError, clientIdConfigured, fetchEventsForRange, getToken } from "./api.js";
+import { ApiError, clientIdConfigured, getToken } from "./api.js";
+import { fetchMergedEvents } from "./calendars.js";
 import {
   addDays,
   dateKey,
@@ -131,6 +132,14 @@ function renderEvents(events) {
   for (const event of [...allDay, ...timed]) {
     const li = document.createElement("li");
     li.className = "event";
+
+    const dot = document.createElement("span");
+    dot.className = "event-dot";
+    if (event.calendarColor) {
+      dot.style.backgroundColor = event.calendarColor;
+    }
+    li.appendChild(dot);
+
     const addLine = (cls, text) => {
       const p = document.createElement("p");
       p.className = cls;
@@ -182,7 +191,7 @@ async function loadDay() {
   els.fetchStamp.classList.add("hidden");
   setAgendaStatus("Loading…");
   try {
-    const events = await fetchEventsForRange(weekStart, addDays(weekStart, 7));
+    const events = await fetchMergedEvents(weekStart, addDays(weekStart, 7));
     if (seq !== weekSeq) return; // a newer request superseded this one
     // The user may have navigated to a different week and back while this
     // fetch was in flight — only keep the result if it's still on screen.
@@ -219,6 +228,13 @@ els.connectBtn.addEventListener("click", async () => {
   } catch (err) {
     setAgendaStatus("Sign-in was cancelled or failed. Try again.");
   }
+});
+
+// Picker toggles (this tab or another) change what should be shown.
+document.addEventListener("calendarschange", () => {
+  weekCache = { startMs: null, events: [], counts: new Map(), fetchedAt: null };
+  renderWeekStrip();
+  loadDay();
 });
 
 // Keep the "in N min" badges honest if a tab stays open.

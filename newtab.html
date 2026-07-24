@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="weather/weather.css">
   <link rel="modulepreload" href="calendar/api.js">
   <link rel="modulepreload" href="calendar/dates.js">
+  <link rel="modulepreload" href="calendar/calendars.js">
   <link rel="modulepreload" href="todo/store.js">
   <link rel="modulepreload" href="scratchpad/store.js">
   <link rel="modulepreload" href="shared/storage.js">
@@ -53,7 +54,10 @@
       </div>
       <p id="agenda-status" class="agenda-status hidden"></p>
       <ul id="event-list" class="event-list"></ul>
-      <p id="fetch-stamp" class="fetch-stamp hidden"></p>
+      <div class="agenda-footer">
+        <p id="fetch-stamp" class="fetch-stamp hidden"></p>
+        <button id="cal-btn" class="cal-btn" title="Choose calendars (C)">calendars</button>
+      </div>
     </section>
   </main>
 
@@ -87,8 +91,17 @@
     </div>
   </div>
 
+  <div id="cal-overlay" class="cal-overlay hidden">
+    <div class="cal-card">
+      <h2 class="cal-title">Calendars</h2>
+      <div id="cal-list" class="cal-list"></div>
+      <p class="cal-hint">changes apply immediately &nbsp;&middot;&nbsp; <kbd>Esc</kbd> to close</p>
+    </div>
+  </div>
+
   <script type="module" src="calendar/calendar.js"></script>
   <script type="module" src="calendar/month.js"></script>
+  <script type="module" src="calendar/picker.js"></script>
   <script type="module" src="weather/weather.js"></script>
   <script type="module" src="todo/todo.js"></script>
   <script type="module" src="scratchpad/scratchpad.js"></script>

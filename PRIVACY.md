@@ -10,12 +10,17 @@ data stays between your browser and the services you explicitly connect —
 ## What the extension accesses and where it goes
 
 **Google Calendar (optional, read-only).** If you connect Google Calendar,
-the extension requests the `calendar.events.readonly` scope and fetches
-events directly from Google's Calendar API to display them on your new-tab
-page. Event data is held in memory only, is never written to disk or
-extension storage, and is never sent anywhere other than back to your
-screen. Sign-in is handled by Chrome's built-in identity system; the
-extension never sees your password and does not store OAuth tokens itself.
+the extension requests the `calendar.events.readonly` and
+`calendar.calendarlist.readonly` scopes. It reads your list of calendars
+(names and colors) so you can choose which ones to display, and fetches
+events directly from Google's Calendar API to show them on your new-tab
+page. Calendar and event data is held in memory only, is never written to
+disk or extension storage, and is never sent anywhere other than back to
+your screen. Your choice of which calendars to show is stored in Chrome's
+`storage.sync` (this selection includes each calendar's identifier, which
+is typically an email-like address). Sign-in is handled by Chrome's built-in identity system;
+the extension never sees your password and does not store OAuth tokens
+itself.
 
 **To-dos and scratchpad.** Stored in Chrome's `storage.sync`, which syncs
 them across your own Chrome profile via your Google account. They are never
