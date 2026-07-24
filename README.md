@@ -69,13 +69,6 @@ git clone https://github.com/wenhongg/newtab.git
    works for from-source installs too. (Until Google's verification
    completes you'll see an "unverified app" screen — *Advanced → continue*.)
 
-Only if you fork the project and want it running under your own Google
-Cloud project do you need your own OAuth client — see [SETUP.md](SETUP.md).
-
-**Developing:** edit the files, then hit the reload icon on the extension's
-card in `chrome://extensions` and open a new tab. `./pack.sh` builds a
-store-ready `release.zip` (strips the dev `key` from the manifest).
-
 ## Structure
 
 Vanilla JS ES modules, no build step. One folder per feature:
